@@ -1,11 +1,11 @@
-"use client"
-import { createContext, useContext, useEffect, useReducer } from 'react';
+"use client";
+import { createContext, useContext, useEffect, useReducer } from "react";
 // let currAnim be anim name only
 export const initialState = {
   playIndivAnim: [],
   currAnim: null,
   action: null,
-  fade:false
+  fade: false,
 };
 
 export function reducer(state, action) {
@@ -15,16 +15,20 @@ export function reducer(state, action) {
     case "playIndivAnimFin":
       return { ...state, playIndivAnim: [] };
     case "fadeAnim":
-          return { ...state, fade: true}
+      if (state.currAnim) {
+        return { ...state, fade: true };
+      } else {
+        return { ...state };
+      }
+
     case "fadeAnimFin":
-      return { ...state, fade: false,currAnim:null }
+      return { ...state, fade: false, currAnim: null };
     case "setCurrAnim":
-      return {...state,currAnim:action.payload}
+      return { ...state, currAnim: action.payload };
     default:
       throw new Error("Unknown action type");
   }
 }
-
 
 const AnimManagerContext = createContext();
 export function useAnimManagerContext() {
@@ -41,31 +45,33 @@ export const AnimManagerProvider = ({ children }) => {
   const playIndivAnim = (animation) => {
     dispatch({ type: "playIndivAnim", payload: animation });
   };
-  
+
   const playIndivAnimFin = () => {
     dispatch({ type: "playIndivAnimFin" });
   };
   const fadeAnim = () => {
-    console.log("fading animations")
-      dispatch({type:'fadeAnim'})
-    }
-    const fadeAnimFin = () => {
-      dispatch({type:'fadeAnimFin'})
-  }
-    const setCurrAnim = (animation) => {
-      dispatch({type:'setCurrAnim',payload:animation})
-  }
-  
+    console.log("fading animations", state.currAnim);
+    dispatch({ type: "fadeAnim" });
+  };
+  const fadeAnimFin = () => {
+    dispatch({ type: "fadeAnimFin" });
+  };
+  const setCurrAnim = (animation) => {
+    dispatch({ type: "setCurrAnim", payload: animation });
+  };
+
   return (
-    <AnimManagerContext.Provider value={{ 
+    <AnimManagerContext.Provider
+      value={{
         state,
         dispatch,
         playIndivAnim,
-          playIndivAnimFin,
-      fadeAnim,
-      setCurrAnim,
-      fadeAnimFin
-        }}>
+        playIndivAnimFin,
+        fadeAnim,
+        setCurrAnim,
+        fadeAnimFin,
+      }}
+    >
       {children}
     </AnimManagerContext.Provider>
   );

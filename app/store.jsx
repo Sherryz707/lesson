@@ -1,5 +1,5 @@
-"use client"
-import { createContext, useContext, useEffect, useReducer } from 'react';
+"use client";
+import { createContext, useContext, useEffect, useReducer } from "react";
 
 export const initialState = {
   lessons: [],
@@ -11,7 +11,7 @@ export const initialState = {
   modalVisible: false,
   playIndivAnim: [],
   animToFade: null,
-  animFadeStatus:false
+  animFadeStatus: false,
 };
 
 export function reducer(state, action) {
@@ -21,9 +21,14 @@ export function reducer(state, action) {
     case "dataFailed":
       return { ...state, status: "error" };
     case "startLesson":
-      return { ...state, status: "active", modalVisible: false, currentLessonIndex: 0 };
+      return {
+        ...state,
+        status: "active",
+        modalVisible: false,
+        currentLessonIndex: 0,
+      };
     case "AnimFinishShowModal":
-      return { ...state, modalVisible: true};
+      return { ...state, modalVisible: true };
     case "submitAnswer":
       const lesson = state.lessons[state.currentLessonIndex];
       const isCorrect = action.payload === lesson.modal.answer;
@@ -41,21 +46,29 @@ export function reducer(state, action) {
       const nextLessonIndex = state.currentLessonIndex + 1;
       const hasMoreLessons = nextLessonIndex < state.lessons.length;
       return hasMoreLessons
-        ? { ...state, currentLessonIndex: nextLessonIndex, answer: null,status:'active' }
-        : { ...state, status: "finished", highscore: Math.max(state.points, state.highscore) };
-    case 'SetAnimFade':
-      return { ...state, animToFade: action.payload }
-    case 'FadeOutAnim':
-      return {...state,animFadeStatus:true}
+        ? {
+            ...state,
+            currentLessonIndex: nextLessonIndex,
+            answer: null,
+            status: "active",
+          }
+        : {
+            ...state,
+            status: "finished",
+            highscore: Math.max(state.points, state.highscore),
+          };
+    case "SetAnimFade":
+      return { ...state, animToFade: action.payload };
+    case "FadeOutAnim":
+      return { ...state, animFadeStatus: true };
     case "EmptyAnimToFade":
-      return {...state,animToFade:null,animFadeStatus:false}
+      return { ...state, animToFade: null, animFadeStatus: false };
     case "restart":
       return { ...initialState, lessons: state.lessons, status: "ready" };
     default:
       throw new Error("Unknown action type");
   }
 }
-
 
 const AppContext = createContext();
 export function useAppContext() {
@@ -88,57 +101,57 @@ export const AppProvider = ({ children }) => {
           console.error("Error fetching lessons:", error);
           dispatch({ type: "dataFailed" });
         });
-    }, 2000); // Simulate a delay for fetching data
+    }, 500); // Simulate a delay for fetching data
 
     return () => clearTimeout(timer);
   }, []);
-
 
   const dataReceived = (payload) => {
     dispatch({ type: "dataReceived", payload });
   };
   const EmptyFadeAnim = () => {
-    dispatch({type:'EmptyAnimToFade'})
-  }
+    dispatch({ type: "EmptyAnimToFade" });
+  };
   const SetAnimToFade = (payload) => {
-    dispatch({type:'SetAnimFade',payload})
-  }
+    dispatch({ type: "SetAnimFade", payload });
+  };
   const dataFailed = () => {
     dispatch({ type: "dataFailed" });
   };
-  
+
   const startLesson = () => {
     dispatch({ type: "startLesson" });
   };
-  
+
   const animFinishShowModal = () => {
     dispatch({ type: "AnimFinishShowModal" });
   };
-  
+
   const submitAnswer = (answer) => {
     dispatch({ type: "submitAnswer", payload: answer });
-    dispatch({type:'nextLesson'})
+    dispatch({ type: "nextLesson" });
   };
-  
+
   const playIndivAnim = (animation) => {
     dispatch({ type: "playIndivAnim", payload: animation });
   };
-  
+
   const playIndivAnimFin = () => {
     dispatch({ type: "playIndivAnimFin" });
   };
-  
+
   const nextLesson = () => {
     dispatch({ type: "nextLesson" });
   };
-  
+
   const restart = () => {
-    console.log("RESTARTING THIS SHIT MAN IN STORE")
+    console.log("RESTARTING THIS SHIT MAN IN STORE");
     dispatch({ type: "restart" });
   };
-  
+
   return (
-    <AppContext.Provider value={{ 
+    <AppContext.Provider
+      value={{
         state,
         dispatch,
         dataReceived,
@@ -147,10 +160,13 @@ export const AppProvider = ({ children }) => {
         animFinishShowModal,
         submitAnswer,
         playIndivAnim,
-      playIndivAnimFin,
+        playIndivAnimFin,
         EmptyFadeAnim,
-      nextLesson,
-        restart,SetAnimToFade }}>
+        nextLesson,
+        restart,
+        SetAnimToFade,
+      }}
+    >
       {children}
     </AppContext.Provider>
   );
