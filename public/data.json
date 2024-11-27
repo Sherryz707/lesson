@@ -1,0 +1,32 @@
+[
+  {
+    "lessonIndex": 0,
+    "animations": [
+      {
+        "animation": "A_Sign",
+        "facialExpression": "smile",
+        "audio": "C-C.mp3"
+      }
+    ],
+    "modal": {
+      "modalQuestion": "What is the main goal here?",
+      "answer": "Encourage cheerfully"
+    },
+    "points":20
+  },
+  {
+    "lessonIndex": 1,
+    "animations": [
+      {
+        "animation": "B_Sign",
+        "facialExpression": "happy",
+        "audio": "welcome.mp3"
+      }
+    ],
+    "modal": {
+      "modalQuestion": "What does the animation depict?",
+      "answer": "Wave greeting"
+    },
+    "points":40
+  }
+]
